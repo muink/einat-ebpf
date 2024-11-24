@@ -67,6 +67,14 @@ fn einat_obj_build() {
     } else {
         "bpfeb"
     };
+ 
+    let debug_cmd = "echo PATH: $PATH";
+    let res = Command::new("bash")
+        .arg("-c")
+        .arg(debug_cmd)
+        .status()
+        .unwrap();
+    panic!("{}", res);
 
     cmd.arg("-target")
         .arg(target)
