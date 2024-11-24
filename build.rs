@@ -73,6 +73,13 @@ fn einat_obj_build() {
         "bpfeb"
     };
 
+    //let res = Command::new("bash")
+    //    .arg("-c")
+    //    .arg("echo PATH: $PATH")
+    //    .status()
+    //    .unwrap();
+    //panic!("{}", res);
+
     let res = cmd
         .arg("-target")
         .arg(target)
@@ -84,9 +91,7 @@ fn einat_obj_build() {
         .arg(bpf_obj_tmp)
         .status()
         .expect("compile BPF object failed");
-    if !res.success() {
-        panic!("{}", res);
-    }
+    panic!("\n\nBPF 编译失败！\n执行的命令为: {:?}\n错误代码: {}\n", cmd, res);
 
     fn strip_obj<S: AsRef<OsStr>>(strip_cmd: &str, target: S, source: S) -> Result<(), String> {
         let mut args = strip_cmd.split_ascii_whitespace();
