@@ -23,6 +23,7 @@ ipv6 = []
 # Enable Aya BPF loader
 aya = [
     # the dep:aya is also used for determining kernel version so it's already included
+    "dep:aya-obj",
 ]
 # Enable libbpf BPF loader
 libbpf = ["dep:libbpf-rs", "dep:libbpf-sys"]
@@ -42,13 +43,13 @@ static = ["libbpf-sys?/static"]
 #
 
 [dependencies]
-anyhow = "1.0.98"
+anyhow = "1.0.100"
 async-stream = "0.3.6"
 aya = "0.13.1"
-aya-obj = "0.2.1"
-bitflags = { version = "2.9.1", features = ["bytemuck"] }
-bytemuck = { version = "1.23.1", features = ["derive"] }
-cfg-if = "1.0.0"
+aya-obj = { version = "0.2.1", optional = true }
+bitflags = { version = "2.10.0", features = ["bytemuck"] }
+bytemuck = { version = "1.24.0", features = ["derive"] }
+cfg-if = "1.0.4"
 enum_dispatch = "0.3.13"
 fundu = "2.0.1"
 futures-util = { version = "0.3.31", default-features = false, features = [
@@ -58,25 +59,28 @@ ipnet = { version = "2.11.0", features = ["serde"] }
 lexopt = "0.3.1"
 libbpf-rs = { version = "0.25.0", optional = true }
 libbpf-sys = { version = "1.5.1", optional = true }
-libc = "0.2.172"
-netlink-packet-core = "0.7.0"
-netlink-packet-route = "0.24.0"
-netlink-proto = "0.11.5"
+libc = "0.2.178"
+netlink-packet-core = "0.8.1"
+netlink-packet-route = "0.26.0"
+netlink-proto = "0.12.0"
 netlink-sys = "0.8.7"
-prefix-trie = "0.7.0"
-rtnetlink = "0.17.0"
-self_cell = { version = "1.2.0", optional = true }
-serde = { version = "1.0.219", features = ["derive"] }
-tokio = { version = "1.45.1", features = [
+prefix-trie = "0.8.1"
+rtnetlink = "0.19.0"
+self_cell = { version = "1.2.1", optional = true }
+serde = { version = "1.0.228", features = ["derive"] }
+tokio = { version = "1.48.0", features = [
     "macros",
     "rt",
     "signal",
     "sync",
     "time",
 ] }
-toml = { version = "0.8.23", default-features = false, features = ["parse"] }
-tracing = { version = "0.1.41", default-features = false, features = ["std"] }
-tracing-subscriber = { version = "0.3.19", default-features = false, features = [
+toml = { version = "0.9.8", default-features = false, features = [
+    "parse",
+    "serde",
+] }
+tracing = { version = "0.1.43", default-features = false, features = ["std"] }
+tracing-subscriber = { version = "0.3.22", default-features = false, features = [
     "std",
     "fmt",
     "ansi",

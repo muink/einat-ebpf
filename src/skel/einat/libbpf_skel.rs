@@ -172,7 +172,9 @@ impl EinatEbpfInet<Ipv4Net> for EinatLibbpfSkel {
             .maps
             .data_data
             .as_ref()
-            .map_or(Default::default(), |data| data.g_ipv4_external_addr);
+            .map(|data| data.g_ipv4_external_addr)
+            .unwrap();
+
         let octets: [u8; 4] = bytemuck::bytes_of(&addr).try_into().unwrap();
         Ok(Ipv4Net::from_addr(Ipv4Addr::from(octets)))
     }
@@ -210,7 +212,9 @@ impl EinatEbpfInet<Ipv6Net> for EinatLibbpfSkel {
             .maps
             .data_data
             .as_ref()
-            .map_or(Default::default(), |data| data.g_ipv6_external_addr);
+            .map(|data| data.g_ipv6_external_addr)
+            .unwrap();
+
         let octets: [u8; 16] = bytemuck::bytes_of(&addr).try_into().unwrap();
         Ok(Ipv6Net::from_addr(Ipv6Addr::from(octets)))
     }
