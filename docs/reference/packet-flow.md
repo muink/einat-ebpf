@@ -31,9 +31,9 @@ There is 2 types of records that `einat` uses for tracking NAT state, binding re
 
 ### Binding record
 
-The binding record tracks port mapping of `(internal source address, internal source address) <--> (external source address, external source port)`, which is going to be used for NAT. The binding record also has a `use` counter for tracking outbound CTs referencing it and a `ref` counter for tracking any inbound or outbound CTs referencing it.
+The binding record tracks port mapping of `(internal source address, internal source address) <--> (external source address, external source port)`, which is going to be used for NAT. The binding record also has a `outbound_ref` counter for tracking outbound CTs referencing it and a `ref` counter for tracking any inbound or outbound CTs referencing it.
 
-A new inbound CT record can only be created if the binding has outbound CTs referencing it, i.e. the `use` counter is not zero.
+A new inbound CT record can only be created if the binding has outbound CTs referencing it, i.e. the `outbound_ref` counter is not zero.
 
 If the `ref` counter becomes zero, the binding would be deleted.
 

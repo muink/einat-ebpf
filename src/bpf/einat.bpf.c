@@ -934,7 +934,7 @@ static __always_inline void delete_ct(struct map_ct_key *key) {
         if (__sync_sub_and_fetch(&b_value_rev->ref, 1) != 0) {
             goto delete_ct;
         }
-    } else if (__sync_sub_and_fetch(&b_value_rev->use, 1),
+    } else if (__sync_sub_and_fetch(&b_value_rev->outbound_ref, 1),
                __sync_sub_and_fetch(&b_value_rev->ref, 1) != 0) {
         goto delete_ct;
     }
@@ -1233,7 +1233,7 @@ partial_init_binding_value(bool is_ipv4, __be16 to_port,
     val->flags = (is_ipv4 ? ADDR_IPV4_FLAG : ADDR_IPV6_FLAG);
     val->to_port = to_port;
     val->is_static = false;
-    val->use = 0;
+    val->outbound_ref = 0;
     val->ref = 0;
     val->seq = __sync_fetch_and_add(&g_next_binding_seq, 1);
 }
@@ -1590,7 +1590,7 @@ static __always_inline int egress_lookup_or_new_ct(
     }
 
     __sync_fetch_and_add(&b_value_rev->ref, 1);
-    __sync_fetch_and_add(&b_value_rev->use, 1);
+    __sync_fetch_and_add(&b_value_rev->outbound_ref, 1);
     b_value_orig->ref = BINDING_ORIG_REF_COUNTED;
 
     bpf_log_debug("insert new CT");
@@ -1646,12 +1646,12 @@ ct_state_transition(u32 ifindex, u8 l4proto, u8 pkt_type, bool is_outbound,
             }
 
             NEW_STATE(CT_ESTABLISHED);
-            __sync_fetch_and_add(&b_value_rev->use, 1);
+            __sync_fetch_and_add(&b_value_rev->outbound_ref, 1);
             RESET_TIMER(pkt_type == PKT_ICMP  ? TIMEOUT_ICMP_DEFAULT
                         : pkt_type == PKT_UDP ? TIMEOUT_UDP_DEFAULT
                                               : TIMEOUT_TCP_EST);
             bpf_log_debug("INIT_IN -> ESTABLISHED");
-        } else if (b_value->use != 0) {
+        } else if (b_value->outbound_ref != 0) {
             // XXX: or just don't refresh timer and wait recreating CT instead
             RESET_TIMER(pkt_type == PKT_ICMP  ? TIMEOUT_ICMP_DEFAULT
                         : pkt_type == PKT_UDP ? TIMEOUT_UDP_MIN
@@ -1849,7 +1849,8 @@ int ingress_rev_snat(struct __sk_buff *skb) {
     if (!b_value_rev->is_static) {
         bool do_inbound_ct =
             !g_deleting_map_entries && !is_icmpx_error &&
-            ((b_value_rev->use != 0 && pkt_allow_initiating_ct(pkt.pkt_type)) ||
+            ((b_value_rev->outbound_ref != 0 &&
+              pkt_allow_initiating_ct(pkt.pkt_type)) ||
              (do_inbound_binding &&
               inet_addr_equal(&b_value_rev->to_addr, &pkt.tuple.daddr)));
 

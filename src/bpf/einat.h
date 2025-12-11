@@ -189,7 +189,7 @@ struct map_binding_value {
     u8 is_static;
     // We only do binding ref counting on inbound direction, i.e. no
     // BINDING_ORIG_DIR_FLAG on binding key
-    u32 use;
+    u32 outbound_ref;
     u32 ref;
     u32 seq;
 };
