@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.10] - 2025-12-11
+
+### 🐛 Bug Fixes
+
+-   _(bpf)_ Set timeout to the correct value for ESTABLISHED conntrack
+-   _(bpf)_ Fix port number format of a trace logging
+
+### Improve
+
+-   Separate ICMP timeout and UDP timeout
+
 ## [0.1.9] - 2025-06-09
 
 ### 🐛 Bug Fixes
